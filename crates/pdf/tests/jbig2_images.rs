@@ -62,9 +62,11 @@ fn dictionary_counting(exported: u32, new: u32) -> Vec<u8> {
 /// order.
 fn draw(stream: &[u8], (width, height): (u32, u32), kind: &str) -> (bool, Vec<String>) {
     let content = "q 20 0 0 20 5 5 cm /Im Do Q";
-    let mut image =
-        format!("<< /Type /XObject /Subtype /Image /Width {width} /Height {height} {kind} /Filter /JBIG2Decode /Length {} >>\nstream\n", stream.len())
-            .into_bytes();
+    let mut image = format!(
+        "<< /Type /XObject /Subtype /Image /Width {width} /Height {height} {kind} /Filter /JBIG2Decode /Length {} >>\nstream\n",
+        stream.len()
+    )
+    .into_bytes();
     image.extend_from_slice(stream);
     image.extend_from_slice(b"\nendstream");
     let bytes = assemble(&[
