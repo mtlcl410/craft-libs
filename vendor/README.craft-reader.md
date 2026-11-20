@@ -369,6 +369,18 @@ fonts without Encoding) and #1499 (byte-aligned packed TIFF predictor rows).
 Synthetic tests cover 1/2/4/8-bit RGB rows and rendering, plus embedded TrueType
 text with absent or partial ToUnicode maps and explicit encoding precedence.
 
+## Pattern, clip, stroke and annotation fixes from open PdfCraft pull requests
+
+Ported from PdfCraft pull requests by mtlcl410 that were open when they were ported (craft-libs
+#2676). Only their `hayro-interpret` and `hayro` part is ported. Code comments keep each pull
+request's `PdfCraft patch` number; `hayro` and `hayro-interpret` number their patches apart, so
+hayro patch 35 here is not hayro-interpret's plate-mode patch 35. The tests are in the files they
+name.
+
+| PdfCraft PR | Files | Change | Tests |
+|---|---|---|---|
+| [#7311](https://github.com/storytold/pdfcraft/pull/7311) | hayro `renderer.rs`, `subpixel_dash_tests.rs` | A dash pattern whose period, stretched by the most the CTM lengthens any direction (`largest_stretch`), is under a tenth of a device pixel (`SOLID_DASH_PERIOD_PX`) is drawn solid instead of being cut into pieces that average out again (ISO 32000-2 §8.4.3.6 gives dash lengths in user space); a period that isn't finite on the device is drawn solid too. Periods of a tenth of a pixel or more dash as before | hayro `renderer::dash_tests::largest_stretch_is_the_largest_singular_value`, `a_period_under_a_tenth_of_a_device_pixel_is_drawn_solid`; `subpixel_dash_tests::dash_patterns_finer_than_a_tenth_of_a_pixel_are_drawn_solid` |
+
 ## Cooperative opening cancellation
 
 The syntax reader also supports cooperative cancellation scoped to one open operation through
