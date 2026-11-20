@@ -236,6 +236,14 @@ OCR text (mode 3) keeps a heading drawn through its clip. The unit tests
 glyph_names_resolve_to_the_first_glyph_with_that_name}` come with (49) and (50); the #3116
 contract is in `tests/upstream_text.rs`.
 
+Font fixes, ported from PdfCraft pull requests by mtlcl410 that were open when they were ported
+(craft-libs #2674). Code comments keep each pull request's `PdfCraft patch` label and number,
+where it has one. The tests are in the files they name.
+
+| PdfCraft PR | Files | Change | Tests |
+|---|---|---|---|
+| [#7327](https://github.com/storytold/pdfcraft/pull/7327) | hayro-interpret `font/blob.rs` | Patch 109: a TrueType font whose last `loca` offset is smaller than the last glyph's start (a subset writing it as 0) or past the end of `glyf` is read with that offset set to the `glyf` table's length, so its last glyph and the composite glyphs built on it draw (ISO 32000-2 §9.9; OpenType `loca`). A font whose last glyph starts past `glyf`, or whose earlier offsets are out of order, is left as it is | `font::blob::tests::a_last_loca_offset_out_of_order_ends_at_the_glyf_table`; `a_last_glyph_whose_loca_end_is_zero_draws_and_so_do_composites_built_on_it` in `tests/truetype_loca_last_glyph.rs` |
+
 Fixes from the [PdfCraft revision 0b670caf4a090e9d83a7f41a84b4cb2144a2d33e ledger](https://github.com/storytold/pdfcraft/blob/0b670caf4a090e9d83a7f41a84b4cb2144a2d33e/vendor/README.md),
 by its item ids, each marked `PdfCraft patch` in the source. hayro-syntax (24), PdfCraft
 #2400: `xref::prev_offset` reads a trailer `/Prev` written as a reference `N G R` as the
