@@ -78,6 +78,15 @@ object where two objects overlap. The erase pass resolves the group's resources 
 adapts its tests; a plate-mode test in `crates/pdf/tests/plates.rs` checks the case of craft-libs
 #870, a Multiply knockout group over a yellow page.
 
+Page-tree, reference and content-array repairs, ported from PdfCraft pull requests by mtlcl410
+that were open when they were ported (craft-libs #2528). Only their `hayro-syntax` part is ported.
+Code comments keep each pull request's `PdfCraft patch` label and number, where it has one. The
+tests are in the files they name.
+
+| PdfCraft PR | Files | Change | Tests |
+|---|---|---|---|
+| [#7405](https://github.com/storytold/pdfcraft/pull/7405) | `xref.rs` | Patch 52: a reference `n g R`, `g` not 0, to an object the table doesn't hold by that generation reaches the member `n 0` of an object stream, whose generation is 0 (§7.5.7); an object stored on its own still needs its own generation. The `craft-pdf` side is craft-libs #1504 | `xref::tests::a_member_of_an_object_stream_is_reached_by_another_generation` |
+
 A craft-libs patch, labeled `Craft patch (CMYK masks)` in code comments,
 takes a luminosity soft mask whose group is DeviceCMYK from the group's inks: ISO 32000-2
 §11.6.5.2 and §10.4.2.2 give `1 - min(1, 0.3c + 0.59m + 0.11y + k)`, where the colors as
