@@ -466,6 +466,15 @@ refused-mask handling in `hayro-syntax` and `hayro-interpret` (0ed33990, 4aa732e
 the decoded-image cache of 558ffd7f (a performance change). Tests: those that came with the patches in
 `hayro-jbig2`, and PdfCraft's raster tests adapted in `hayro-jbig2/src/pdfcraft_tests.rs`.
 
+Image-decoding and decryption fixes, ported from PdfCraft pull requests by mtlcl410 that were
+open when they were ported (craft-libs #2673). Only their `hayro-syntax`, `hayro-jbig2` and
+`hayro-interpret` parts are ported. Code comments keep each pull request's `PdfCraft patch` label
+and number. The tests are in the files they name.
+
+| PdfCraft PR | Files | Change | Tests |
+|---|---|---|---|
+| [#7060](https://github.com/storytold/pdfcraft/pull/7060) | hayro-syntax `crypto/mod.rs` | Patches 48, 49 and 57, the renderer side of reading encrypted files as craft-pdf's `cos` and `crypt` read them (craft-libs #1343; code comments name them `pdfcraft-cos` and `pdfcraft-crypt`, as before the move). Patch 48: `/V`, `/R`, `/Length` and `/P` are read as integers or reals with no fraction; no `/V` is RC4 with `/Length` and no `/P` is -1; the `/V 4` key length comes from the crypt filter in use, and a revision 2–4 length outside 40–128 bits is clamped (ISO 32000-2 Table 20); a revision 2–4 password also tries its PDFDocEncoding bytes with the characters it lacks dropped; `/EncryptMetadata false` also tries the key derived with metadata; a longer revision 2 `/U` and R5/R6 `/OE` and `/UE` are read on their first 32 bytes (Table 21). Patch 49: a `/CFM` other than `None`, `V2`, `AESV2` or `AESV3` (`Identity` included) that strings, streams or embedded files use is reported as an unsupported algorithm (Table 25), and no `/CFM` is `None`. Patch 57: `/CFM /AESV3` with a 128-bit key derives each object's key as for `AESV2` (§7.6.3.2, §7.6.3.3) | `crypto::pdfcraft_password_tests::legacy_passwords_are_tried_as_given_then_in_pdf_doc_encoding`, `an_oe_and_ue_of_48_bytes_unlock_with_their_first_32`, `legacy_key_lengths_outside_40_to_128_bits_are_clamped_not_a_panic`, `a_crypt_filter_method_that_cannot_be_decrypted_is_reported`, `aesv3_with_a_128_bit_key_derives_each_objects_key_as_for_aesv2`, `encryption_entries_are_read_as_the_document_model_reads_them`, `keys_the_document_model_accepts_open`, `a_v4_key_length_comes_from_the_filter_in_use` |
+
 ## Craft review note: the one direct `unsafe`
 
 `hayro-syntax/src/page.rs` holds the snapshot's only direct `unsafe` block: a
