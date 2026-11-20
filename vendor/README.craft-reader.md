@@ -236,6 +236,14 @@ OCR text (mode 3) keeps a heading drawn through its clip. The unit tests
 glyph_names_resolve_to_the_first_glyph_with_that_name}` come with (49) and (50); the #3116
 contract is in `tests/upstream_text.rs`.
 
+Font fixes, ported from PdfCraft pull requests by mtlcl410 that were open when they were ported
+(craft-libs #2674). Code comments keep each pull request's `PdfCraft patch` label and number,
+where it has one. The tests are in the files they name.
+
+| PdfCraft PR | Files | Change | Tests |
+|---|---|---|---|
+| [#7465](https://github.com/storytold/pdfcraft/pull/7465) | hayro-syntax `object/string.rs` | Patch 54: a literal string's `\ddd` escape is one to three octal digits and keeps the low eight bits of its value ("high-order overflow shall be ignored", ISO 32000-2 §7.3.4.2, Table 3), so `\737` reads 0xDF; a fourth digit is an ordinary byte. The escape was dropped whenever its value passed `\377`, and form buttons drawn with `(Abschlie\737en)` lost their ß. `hayro-postscript` keeps the same rule for CMap strings (craft-libs #2321) | `object::string::tests::literal_string_octal_overflow_keeps_the_low_eight_bits`; `an_octal_escape_past_0o377_reads_its_low_eight_bits` in `tests/upstream_text.rs` |
+
 Fixes from the [PdfCraft revision 0b670caf4a090e9d83a7f41a84b4cb2144a2d33e ledger](https://github.com/storytold/pdfcraft/blob/0b670caf4a090e9d83a7f41a84b4cb2144a2d33e/vendor/README.md),
 by its item ids, each marked `PdfCraft patch` in the source. hayro-syntax (24), PdfCraft
 #2400: `xref::prev_offset` reads a trailer `/Prev` written as a reference `N G R` as the
