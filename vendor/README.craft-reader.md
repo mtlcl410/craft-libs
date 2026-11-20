@@ -502,6 +502,15 @@ fallibly, and memory that cannot be reserved is refused with `OverflowError::Bit
 `filter::jbig2::tests::the_pixel_limit_given_is_the_one_applied` and
 `decode_limits_tests::a_documents_pixel_limit_reaches_the_jbig2_decoder` in hayro-syntax.
 
+Image-decoding and decryption fixes, ported from PdfCraft pull requests by mtlcl410 that were
+open when they were ported (craft-libs #2673). Only their `hayro-syntax`, `hayro-jbig2` and
+`hayro-interpret` parts are ported. Code comments keep each pull request's `PdfCraft patch` label
+and number. The tests are in the files they name.
+
+| PdfCraft PR | Files | Change | Tests |
+|---|---|---|---|
+| [#7316](https://github.com/storytold/pdfcraft/pull/7316) | hayro-jbig2 `bitmap.rs`, `decode/symbol.rs`, `decode/text.rs`, `lib.rs`; hayro-interpret `x_object.rs`, `cache.rs`, `interpret/mod.rs` | A symbol dictionary may hold more than 65,535 symbols (T.88 gives SDNUMEXSYMS and SDNUMNEWSYMS 32 bits): its counts are held to the words the page may still retain before anything is reserved, and its lists reserve at most 65,536 entries up front. A dictionary's symbol pixels have no bound of their own any more (the `Limits::max_pixels` figure above still bounds each bitmap it makes): the decoding work and the retained words bound them. A height class collective bitmap is bounded by its pixels and height, not by the 65,535 bound on a bitmap's width (`Bitmap::new_collective`). A text region's instances are bounded by the decoding work they take (four integers each, against the work of the stream's `Limits`), not by a count of 10,000. A JBIG2 image drawn on its own, a stencil mask included, that one of the decoder's limits refuses is reported as `ContentTruncated`, as a picture's mask so refused is (ISO 32000-2 §7.4.7), and its failure is kept by the decoded-image cache as its stream's own | `decode::symbol::tests::symbol_counts_are_held_to_what_the_page_retains`, `bitmap::pdfcraft_limit_tests::a_collective_bitmap_is_bounded_by_its_pixels_not_its_width`, `pdfcraft_tests::jbig2_a_symbol_dictionary_holds_as_many_pixels_as_its_work_and_words_allow`, `jbig2_a_symbol_dictionary_holds_more_than_65535_symbols`, `jbig2_a_collective_bitmap_is_as_wide_as_its_symbols_together`, `jbig2_a_text_region_places_as_many_instances_as_its_work_allows` in hayro-jbig2; `a_jbig2_image_drawn_on_its_own_that_a_decoder_limit_refuses_is_content_left_out` in `crates/pdf/tests/jbig2_images.rs` |
+
 ## Craft review note: the one direct `unsafe`
 
 `hayro-syntax/src/page.rs` holds the snapshot's only direct `unsafe` block: a
