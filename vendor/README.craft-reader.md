@@ -236,6 +236,14 @@ OCR text (mode 3) keeps a heading drawn through its clip. The unit tests
 glyph_names_resolve_to_the_first_glyph_with_that_name}` come with (49) and (50); the #3116
 contract is in `tests/upstream_text.rs`.
 
+Font fixes, ported from PdfCraft pull requests by mtlcl410 that were open when they were ported
+(craft-libs #2674). Code comments keep each pull request's `PdfCraft patch` label and number,
+where it has one. The tests are in the files they name.
+
+| PdfCraft PR | Files | Change | Tests |
+|---|---|---|---|
+| [#7513](https://github.com/storytold/pdfcraft/pull/7513) | hayro-interpret `font/cid.rs` | Patch 116: a CID font whose `/Encoding` names a CMap Adobe publishes for a supplement of one of its character collections (`Adobe-Japan1-2`, `Adobe-GB1-6`, …), which ISO 32000-2 §9.7.5.2 doesn't list in Table 116 and which the CMap resolver doesn't hold, reads two-byte codes as the CIDs of the same number below the supplement's CID count, and from there as CID 0. The whole font was dropped for the substitute, which read the codes a byte at a time and left its `/ToUnicode` unread (§9.10.2). The CID counts are the `/CIDCount` of Adobe's published CMaps (adobe-type-tools/cmap-resources, BSD-3-Clause) | `font::cid::collection_cmap_tests::an_adobe_collection_cid_cmap_reads_two_byte_codes_as_cids`; `an_adobe_collection_cid_cmap_name_reads_two_byte_codes` in `tests/upstream_text.rs` |
+
 Fixes from the [PdfCraft revision 0b670caf4a090e9d83a7f41a84b4cb2144a2d33e ledger](https://github.com/storytold/pdfcraft/blob/0b670caf4a090e9d83a7f41a84b4cb2144a2d33e/vendor/README.md),
 by its item ids, each marked `PdfCraft patch` in the source. hayro-syntax (24), PdfCraft
 #2400: `xref::prev_offset` reads a trailer `/Prev` written as a reference `N G R` as the
