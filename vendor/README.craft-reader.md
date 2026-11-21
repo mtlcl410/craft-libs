@@ -369,6 +369,18 @@ fonts without Encoding) and #1499 (byte-aligned packed TIFF predictor rows).
 Synthetic tests cover 1/2/4/8-bit RGB rows and rendering, plus embedded TrueType
 text with absent or partial ToUnicode maps and explicit encoding precedence.
 
+## Pattern, clip, stroke and annotation fixes from open PdfCraft pull requests
+
+Ported from PdfCraft pull requests by mtlcl410 that were open when they were ported (craft-libs
+#2676). Only their `hayro-interpret` and `hayro` part is ported. Code comments keep each pull
+request's `PdfCraft patch` number; `hayro` and `hayro-interpret` number their patches apart, so
+hayro patch 35 here is not hayro-interpret's plate-mode patch 35. The tests are in the files they
+name.
+
+| PdfCraft PR | Files | Change | Tests |
+|---|---|---|---|
+| [#7397](https://github.com/storytold/pdfcraft/pull/7397) | hayro-interpret `context.rs`, `device.rs`, `font/type3.rs`, `interpret/mod.rs`, `pattern.rs`; hayro `renderer.rs`, `lib.rs`, `coverage_budget_tests.rs` | hayro patch 34: every scene the renderer draws (the page, soft masks, image alpha masks, tiling cells, ink passes) is kept to a coverage budget, 16 values a pixel and at least 2^26 (`coverage_budget`), where paths past it are left out; `RenderSettings::max_coverage` still sets the page's. hayro-interpret patch 112: `Device::out_of_room` stops interpretation once the device has no room, as cancelling does, and the page reports `ContentTruncated`, so forms that draw the next form twice, twenty deep, stop at about 240 MB instead of 5.4 GB (ISO 32000-2 §8.10.1 sets no limit; this bounds a reader's work). Test hooks `hayro::coverage_budget` and `hayro::paths_drawn`; the tests lower the budget's floor on their own thread (`TEST_COVERAGE_FLOOR`, test builds only) | hayro `coverage_budget_tests::*` (7 tests) |
+
 ## Cooperative opening cancellation
 
 The syntax reader also supports cooperative cancellation scoped to one open operation through
