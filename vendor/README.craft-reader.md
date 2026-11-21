@@ -379,7 +379,7 @@ name.
 
 | PdfCraft PR | Files | Change | Tests |
 |---|---|---|---|
-| [#7456](https://github.com/storytold/pdfcraft/pull/7456) | hayro `renderer.rs`, `thin_stroke_width_tests.rs` | hayro patch 35: a stroke's width is no longer floored at 0.01 in user space before the device minimum (one pixel, a quarter for stroked text, along the CTM's larger scale) is applied, so under a large matrix a zero or tiny width is drawn one device pixel wide or as wide as its width, not many pixels (ISO 32000-2 §8.4.3.2: 0 is the thinnest line the device can draw). A NaN or negative width counts as 0. Inside a pattern or a Type 3 glyph, or under a matrix that collapses or isn't finite, the 0.01 floor stays | hayro `thin_stroke_width_tests::*` (5 tests) |
+| [#7456](https://github.com/storytold/pdfcraft/pull/7456) | hayro `renderer.rs`, `thin_stroke_width_tests.rs` | hayro patch 35: a stroke's width is no longer floored at 0.01 in user space before the device minimum (one pixel, a quarter for stroked text, along the direction the CTM shrinks most, `smallest_stretch`) is applied, so under a large matrix a zero or tiny width is drawn one device pixel wide or as wide as its width, not many pixels (ISO 32000-2 §8.4.3.2: 0 is the thinnest line the device can draw). A NaN or negative width counts as 0. Inside a pattern or a Type 3 glyph, or under a matrix that collapses or isn't finite, the 0.01 floor stays | hayro `thin_stroke_width_tests::*` (6 tests) |
 
 ## Cooperative opening cancellation
 
