@@ -369,6 +369,18 @@ fonts without Encoding) and #1499 (byte-aligned packed TIFF predictor rows).
 Synthetic tests cover 1/2/4/8-bit RGB rows and rendering, plus embedded TrueType
 text with absent or partial ToUnicode maps and explicit encoding precedence.
 
+## Pattern, clip, stroke and annotation fixes from open PdfCraft pull requests
+
+Ported from PdfCraft pull requests by mtlcl410 that were open when they were ported (craft-libs
+#2676). Only their `hayro-interpret` and `hayro` part is ported. Code comments keep each pull
+request's `PdfCraft patch` number; `hayro` and `hayro-interpret` number their patches apart, so
+hayro patch 35 here is not hayro-interpret's plate-mode patch 35. The tests are in the files they
+name.
+
+| PdfCraft PR | Files | Change | Tests |
+|---|---|---|---|
+| [#7462](https://github.com/storytold/pdfcraft/pull/7462) | hayro-interpret `interpret/mod.rs`; hayro `renderer.rs`, `clip_edge_tests.rs` | hayro patch 36: a clip path that is an axis-aligned rectangle in device space clips to every whole pixel it reaches into (`pixel_clip_rect`; ISO 32000-2 §10.7.4: the clipping region is the set of pixels a fill would include), not to an anti-aliased fraction of its edge pixels, so abutting clipped strips leave no seam. An edge within a 256th of a pixel of a boundary counts as on it; a rectangle thinner than that keeps the pixel holding its middle; a point keeps nothing; turned, curved and self-retracing clips keep their anti-aliased edge. hayro-interpret patch 114: `sh` fills the whole pixels its clip box reaches into, so a shading clipped to a filled box covers the box's edge pixels | hayro `clip_edge_tests::*` (6 tests) |
+
 ## Cooperative opening cancellation
 
 The syntax reader also supports cooperative cancellation scoped to one open operation through
