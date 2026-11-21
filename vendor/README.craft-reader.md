@@ -369,6 +369,18 @@ fonts without Encoding) and #1499 (byte-aligned packed TIFF predictor rows).
 Synthetic tests cover 1/2/4/8-bit RGB rows and rendering, plus embedded TrueType
 text with absent or partial ToUnicode maps and explicit encoding precedence.
 
+## Pattern, clip, stroke and annotation fixes from open PdfCraft pull requests
+
+Ported from PdfCraft pull requests by mtlcl410 that were open when they were ported (craft-libs
+#2676). Only their `hayro-interpret` and `hayro` part is ported. Code comments keep each pull
+request's `PdfCraft patch` number; `hayro` and `hayro-interpret` number their patches apart, so
+hayro patch 35 here is not hayro-interpret's plate-mode patch 35. The tests are in the files they
+name.
+
+| PdfCraft PR | Files | Change | Tests |
+|---|---|---|---|
+| [#7456](https://github.com/storytold/pdfcraft/pull/7456) | hayro `renderer.rs`, `thin_stroke_width_tests.rs` | hayro patch 35: a stroke's width is no longer floored at 0.01 in user space before the device minimum (one pixel, a quarter for stroked text, along the CTM's larger scale) is applied, so under a large matrix a zero or tiny width is drawn one device pixel wide or as wide as its width, not many pixels (ISO 32000-2 §8.4.3.2: 0 is the thinnest line the device can draw). A NaN or negative width counts as 0. Inside a pattern or a Type 3 glyph, or under a matrix that collapses or isn't finite, the 0.01 floor stays | hayro `thin_stroke_width_tests::*` (5 tests) |
+
 ## Cooperative opening cancellation
 
 The syntax reader also supports cooperative cancellation scoped to one open operation through
