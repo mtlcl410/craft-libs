@@ -356,7 +356,7 @@ fn removing_security_writes_a_pages_metadata_decrypted() {
 /// The same with qpdf as the encrypting party, when it is installed.
 #[test]
 fn qpdf_cleartext_metadata_leaves_only_the_catalogs_in_the_clear() {
-    let qpdf = crate::oracle::or_skip!(crate::oracle::qpdf());
+    let qpdf = super::oracle::or_skip!(super::oracle::qpdf());
     let plain = file(
         &metadata_objects(
             &stream("", SECRET.as_bytes()),
@@ -365,7 +365,7 @@ fn qpdf_cleartext_metadata_leaves_only_the_catalogs_in_the_clear() {
         ),
         &format!(" /ID [<{ID}> <{ID}>]"),
     );
-    let dir = crate::encryption::private_temp_dir("pdfcraft-cleartext-metadata");
+    let dir = super::encryption::private_temp_dir("pdfcraft-cleartext-metadata");
     let (src, out) = (dir.join("plain.pdf"), dir.join("enc.pdf"));
     std::fs::File::create_new(&src).and_then(|mut f| f.write_all(&plain)).unwrap();
     for bits in ["128", "256"] {
