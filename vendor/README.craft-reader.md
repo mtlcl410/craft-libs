@@ -78,6 +78,15 @@ object where two objects overlap. The erase pass resolves the group's resources 
 adapts its tests; a plate-mode test in `crates/pdf/tests/plates.rs` checks the case of craft-libs
 #870, a Multiply knockout group over a yellow page.
 
+Page-tree, reference and content-array repairs, ported from PdfCraft pull requests by mtlcl410
+that were open when they were ported (craft-libs #2528). Only their `hayro-syntax` part is ported.
+Code comments keep each pull request's `PdfCraft patch` label and number, where it has one. The
+tests are in the files they name.
+
+| PdfCraft PR | Files | Change | Tests |
+|---|---|---|---|
+| [#7391](https://github.com/storytold/pdfcraft/pull/7391) | `object/dict.rs` | Patch 51: a closing delimiter or brace between dictionary entries (`/Contents 4 0 R ) >>`) is stepped over as garbage, read or skipped (§7.3.7), so a page dictionary holding one keeps its page and the pages after it (§7.7.3) | `object::dict::tests::a_stray_delimiter_between_entries_keeps_the_dictionary`, `page::page_tree_tests::a_stray_delimiter_in_a_page_dictionary_keeps_the_page_and_the_pages_after_it` |
+
 A craft-libs patch, labeled `Craft patch (CMYK masks)` in code comments,
 takes a luminosity soft mask whose group is DeviceCMYK from the group's inks: ISO 32000-2
 §11.6.5.2 and §10.4.2.2 give `1 - min(1, 0.3c + 0.59m + 0.11y + k)`, where the colors as
