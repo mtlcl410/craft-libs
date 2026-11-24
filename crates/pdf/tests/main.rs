@@ -12,6 +12,7 @@ mod font_tables;
 mod interpretation;
 mod knockout;
 mod knockout_backdrop;
+mod open_type_font_subtype;
 mod plates;
 mod print_color;
 mod testing_pdf;
