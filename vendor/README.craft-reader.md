@@ -236,6 +236,14 @@ OCR text (mode 3) keeps a heading drawn through its clip. The unit tests
 glyph_names_resolve_to_the_first_glyph_with_that_name}` come with (49) and (50); the #3116
 contract is in `tests/upstream_text.rs`.
 
+Font fixes, ported from PdfCraft pull requests by mtlcl410 that were open when they were ported
+(craft-libs #2674). Code comments keep each pull request's `PdfCraft patch` label and number,
+where it has one. The tests are in the files they name.
+
+| PdfCraft PR | Files | Change | Tests |
+|---|---|---|---|
+| [#7710](https://github.com/storytold/pdfcraft/pull/7710) | hayro-interpret `font/mod.rs` | `numbered_names_name_their_codes` also accepts a Type 3 font whose numbered names at control codes fill the block, every code 0 through 31 named by itself in hexadecimal (`/Differences [0 /x0 /x1 … /xff]`, TeX's dvips Type 3 fonts), so such a font reads its codes from 128 up as their Latin-1 characters, as it already read 32–126 (§9.10.2 leaves it no other mapping). A decimal counter from code 1, the same names without code 0, and a hexadecimal subset with a few glyphs at their own control codes still fail. A Type 1 font with a numbered name at a control code fails as before (`/zz0` … `/zzae` reads nothing) | `a_type3_font_naming_its_codes_x0_to_xff_reads_them_from_128_up`, `a_type1_font_counting_its_glyphs_zz0_to_zzae_still_reads_nothing_from_them` in `tests/upstream_text.rs` |
+
 Fixes from the [PdfCraft revision 0b670caf4a090e9d83a7f41a84b4cb2144a2d33e ledger](https://github.com/storytold/pdfcraft/blob/0b670caf4a090e9d83a7f41a84b4cb2144a2d33e/vendor/README.md),
 by its item ids, each marked `PdfCraft patch` in the source. hayro-syntax (24), PdfCraft
 #2400: `xref::prev_offset` reads a trailer `/Prev` written as a reference `N G R` as the
