@@ -78,6 +78,15 @@ object where two objects overlap. The erase pass resolves the group's resources 
 adapts its tests; a plate-mode test in `crates/pdf/tests/plates.rs` checks the case of craft-libs
 #870, a Multiply knockout group over a yellow page.
 
+Page-tree, reference and content-array repairs, ported from PdfCraft pull requests by mtlcl410
+that were open when they were ported (craft-libs #2528). Only their `hayro-syntax` part is ported.
+Code comments keep each pull request's `PdfCraft patch` label and number, where it has one. The
+tests are in the files they name.
+
+| PdfCraft PR | Files | Change | Tests |
+|---|---|---|---|
+| [#7500](https://github.com/storytold/pdfcraft/pull/7500) | `page.rs`, `pdf.rs` | Patch 59: a page tree whose walk reaches no page (empty `/Kids`, or a root that is its own kid) gives way to the `/Type /Page` dictionaries found by scanning (§7.7.3.1); not when the walk stepped over a kid it could not read. Pages found by scanning, here and when the root cannot be read, inherit `/MediaBox`, `/CropBox`, `/Rotate` and `/Resources` through `/Parent` (§7.7.3.3, §7.7.3.4), each node looked up once per scan | `page::page_tree_tests::a_page_tree_leading_to_no_page_gives_way_to_the_pages_found_by_scanning`, `a_tree_with_a_missing_kid_is_not_replaced_by_the_scan`, `pages_found_by_scanning_inherit_through_their_parents` |
+
 A craft-libs patch, labeled `Craft patch (CMYK masks)` in code comments,
 takes a luminosity soft mask whose group is DeviceCMYK from the group's inks: ISO 32000-2
 §11.6.5.2 and §10.4.2.2 give `1 - min(1, 0.3c + 0.59m + 0.11y + k)`, where the colors as
