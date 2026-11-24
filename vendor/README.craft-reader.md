@@ -369,6 +369,18 @@ fonts without Encoding) and #1499 (byte-aligned packed TIFF predictor rows).
 Synthetic tests cover 1/2/4/8-bit RGB rows and rendering, plus embedded TrueType
 text with absent or partial ToUnicode maps and explicit encoding precedence.
 
+## Pattern, clip, stroke and annotation fixes from open PdfCraft pull requests
+
+Ported from PdfCraft pull requests by mtlcl410 that were open when they were ported (craft-libs
+#2676). Only their `hayro-interpret` and `hayro` part is ported. Code comments keep each pull
+request's `PdfCraft patch` number; `hayro` and `hayro-interpret` number their patches apart, so
+hayro patch 35 here is not hayro-interpret's plate-mode patch 35. The tests are in the files they
+name.
+
+| PdfCraft PR | Files | Change | Tests |
+|---|---|---|---|
+| [#6537](https://github.com/storytold/pdfcraft/pull/6537) | hayro-interpret `pattern.rs`; hayro `renderer.rs`, `lib.rs`, `tiling_cell_backdrop_tests.rs` | hayro patch 32: a tiling cell that paints with a blend mode other than Normal, outside every group, is drawn again in each tile its fill or stroke reaches, over what is under it, as ISO 32000-2 §11.6.7 NOTE 1 describes, instead of from a cell pixmap drawn on transparency. At most 256 tiles a shape and 4,096 a page (`MAX_BACKDROP_TILES`, `MAX_PAGE_BACKDROP_TILES`); past them, in a knockout group or its passes, and for tile indices past 2^52, the cell pixmap is painted as before. A cached cell keeps whether it blends. hayro-interpret patch 96: an uncoloured pattern's blend modes reach the device, each shape inside a group taking the outermost group's mode | hayro `tiling_cell_backdrop_tests::*` (13 tests) |
+
 ## Cooperative opening cancellation
 
 The syntax reader also supports cooperative cancellation scoped to one open operation through
