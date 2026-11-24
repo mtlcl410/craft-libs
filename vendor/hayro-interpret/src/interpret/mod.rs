@@ -198,7 +198,9 @@ pub enum InterpreterWarning {
     ImageDecodeFailure,
     /// PdfCraft patch (18): a page content stream was skipped after exhausting its safety budget.
     /// Patch (73): or an image was left out for the page's JBIG2 allowance, or because its JBIG2
-    /// mask is past the allowance or one of the decoder's limits.
+    /// mask is past the allowance or one of the decoder's limits. Patch (113): or because it is too
+    /// large to decode (the document's `max_image_pixels`, past which only a JBIG2 image is
+    /// decoded, at a reduced size).
     ContentTruncated,
 }
 

@@ -10,6 +10,7 @@ mod crypt;
 mod filters;
 mod font_tables;
 mod interpretation;
+mod jbig2_images;
 mod knockout;
 mod knockout_backdrop;
 mod plates;
