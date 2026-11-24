@@ -78,6 +78,15 @@ object where two objects overlap. The erase pass resolves the group's resources 
 adapts its tests; a plate-mode test in `crates/pdf/tests/plates.rs` checks the case of craft-libs
 #870, a Multiply knockout group over a yellow page.
 
+Page-tree, reference and content-array repairs, ported from PdfCraft pull requests by mtlcl410
+that were open when they were ported (craft-libs #2528). Only their `hayro-syntax` part is ported.
+Code comments keep each pull request's `PdfCraft patch` label and number, where it has one. The
+tests are in the files they name.
+
+| PdfCraft PR | Files | Change | Tests |
+|---|---|---|---|
+| [#7392](https://github.com/storytold/pdfcraft/pull/7392) | `byte_reader.rs`, `content/mod.rs` | Patch 50: the `[` of an array operand that cannot be read (one never closed) is stepped over and its items read as operands of the next operator, so the rest of the content stream is read (§7.8.2, §9.4.3). Not an array refused for its nesting, which still ends the stream; the failed arrays of one stream may read eight times its length, and at least 1 MiB | `content::tests::the_operators_after_an_unclosed_array_are_read`, `an_array_nested_past_the_cap_still_ends_the_stream`, `unclosed_arrays_share_a_bounded_recovery_budget`, `random_bracket_soup_is_read_to_the_end_without_panicking` |
+
 A craft-libs patch, labeled `Craft patch (CMYK masks)` in code comments,
 takes a luminosity soft mask whose group is DeviceCMYK from the group's inks: ISO 32000-2
 §11.6.5.2 and §10.4.2.2 give `1 - min(1, 0.3c + 0.59m + 0.11y + k)`, where the colors as
