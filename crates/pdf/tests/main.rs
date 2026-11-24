@@ -15,6 +15,7 @@ mod knockout_backdrop;
 mod plates;
 mod print_color;
 mod testing_pdf;
+mod truetype_loca_last_glyph;
 mod unicode_writing;
 mod upstream_compatibility;
 mod upstream_raster;
