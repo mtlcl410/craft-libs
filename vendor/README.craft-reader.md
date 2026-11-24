@@ -236,6 +236,14 @@ OCR text (mode 3) keeps a heading drawn through its clip. The unit tests
 glyph_names_resolve_to_the_first_glyph_with_that_name}` come with (49) and (50); the #3116
 contract is in `tests/upstream_text.rs`.
 
+Font fixes, ported from PdfCraft pull requests by mtlcl410 that were open when they were ported
+(craft-libs #2674). Code comments keep each pull request's `PdfCraft patch` label and number,
+where it has one. The tests are in the files they name.
+
+| PdfCraft PR | Files | Change | Tests |
+|---|---|---|---|
+| [#7387](https://github.com/storytold/pdfcraft/pull/7387) | hayro-interpret `font/mod.rs`, `font/true_type.rs` | Patch 111: a font dictionary with `/Subtype /OpenType`, which ISO 32000-2 §9.6.2, Table 109 doesn't list, is read by the program it embeds: a CFF program (a `FontFile3` that isn't a TrueType-outline sfnt) or a Type 1 `FontFile` as a Type 1 font, anything else as TrueType. The sfnt tag is read after the program's filters, from the whole program when the first four decoded bytes can't be had (a PNG predictor). A TrueType font reads a `FontFile3 /OpenType` program with TrueType outlines when it has no `FontFile2` (§9.9, Table 124) | `font::open_type_subtype_tests::an_open_type_font_is_read_by_the_program_it_embeds`; `tests/open_type_font_subtype.rs` |
+
 Fixes from the [PdfCraft revision 0b670caf4a090e9d83a7f41a84b4cb2144a2d33e ledger](https://github.com/storytold/pdfcraft/blob/0b670caf4a090e9d83a7f41a84b4cb2144a2d33e/vendor/README.md),
 by its item ids, each marked `PdfCraft patch` in the source. hayro-syntax (24), PdfCraft
 #2400: `xref::prev_offset` reads a trailer `/Prev` written as a reference `N G R` as the
