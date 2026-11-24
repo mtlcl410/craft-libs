@@ -369,6 +369,18 @@ fonts without Encoding) and #1499 (byte-aligned packed TIFF predictor rows).
 Synthetic tests cover 1/2/4/8-bit RGB rows and rendering, plus embedded TrueType
 text with absent or partial ToUnicode maps and explicit encoding precedence.
 
+## Pattern, clip, stroke and annotation fixes from open PdfCraft pull requests
+
+Ported from PdfCraft pull requests by mtlcl410 that were open when they were ported (craft-libs
+#2676). Only their `hayro-interpret` and `hayro` part is ported. Code comments keep each pull
+request's `PdfCraft patch` number; `hayro` and `hayro-interpret` number their patches apart, so
+hayro patch 35 here is not hayro-interpret's plate-mode patch 35. The tests are in the files they
+name.
+
+| PdfCraft PR | Files | Change | Tests |
+|---|---|---|---|
+| [#7492](https://github.com/storytold/pdfcraft/pull/7492) | hayro-interpret `pattern.rs`; hayro `tiling_cell_shading_tests.rs` | Patch 119: a tiling cell is drawn in a context bounded by its own `/BBox` in pattern space (ISO 32000-2 §8.7.3.1), so `sh` in the cell paints as far as that clip (§8.7.4.2). It was bounded by the device rectangle of the content that set the pattern, read as pattern coordinates, so a cell under a pattern matrix that flips y, whose shading lies at negative pattern coordinates, was painted nowhere | hayro `tiling_cell_shading_tests::a_shading_in_a_cell_at_negative_pattern_coordinates_is_painted` |
+
 ## Cooperative opening cancellation
 
 The syntax reader also supports cooperative cancellation scoped to one open operation through
