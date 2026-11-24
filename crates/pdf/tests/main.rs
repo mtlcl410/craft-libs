@@ -18,4 +18,5 @@ mod testing_pdf;
 mod unicode_writing;
 mod upstream_compatibility;
 mod upstream_raster;
+mod upstream_text;
 mod writing;
