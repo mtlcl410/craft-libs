@@ -78,6 +78,15 @@ object where two objects overlap. The erase pass resolves the group's resources 
 adapts its tests; a plate-mode test in `crates/pdf/tests/plates.rs` checks the case of craft-libs
 #870, a Multiply knockout group over a yellow page.
 
+Colour, function and shading fixes, ported from PdfCraft pull requests by mtlcl410 that were
+open when they were ported (craft-libs #2675). Only their `hayro-interpret` and `hayro` part is
+ported. Code comments keep each pull request's `PdfCraft patch` label and number, where it has
+one. The tests are in the files they name.
+
+| PdfCraft PR | Files | Change | Tests |
+|---|---|---|---|
+| [#7396](https://github.com/storytold/pdfcraft/pull/7396) | hayro-interpret `color.rs`, `x_object.rs`, `lib.rs`; hayro `renderer.rs`, `lib.rs` | hayro-interpret patch 110: an 8-bit CalRGB image with its default `/Decode` converts its samples through a table of each component's power and the 255 sample thresholds of the sRGB transfer function, to the very colours each pixel converted alone gets (§8.6.5.3), instead of decoding every sample to an `f32`; a colour-key `/Mask` still reads the samples as decoded, so a short last row stays transparent. hayro patch 33: a mesh shading filled without a `/BBox` clip is painted through its extent and the pixel around it, on whole pixels (§8.7.4.5.5–8.7.4.5.8, §11.6.4.2), not over the whole path, which changes no pixel; a knockout group fills the path with its own rule after pushing that clip (§11.4.6), so an `f*` fill keeps its holes. Test hooks `hayro_interpret::f32_image_samples` and `hayro::mesh_paint_pixels` count the work | `color::cal_rgb_image_tests::the_thresholds_encode_as_the_transfer_function_does`, `images_convert_as_each_pixel_does`; hayro `large_drawing_cost_tests::small_mesh_shadings_paint_only_around_their_triangles`, `calrgb_8bit_images_convert_as_each_pixel_did`, `a_short_colour_keyed_calrgb_row_keeps_its_missing_pixels_transparent`, `an_even_odd_mesh_fill_in_a_knockout_group_keeps_its_hole` |
+
 A craft-libs patch, labeled `Craft patch (CMYK masks)` in code comments,
 takes a luminosity soft mask whose group is DeviceCMYK from the group's inks: ISO 32000-2
 §11.6.5.2 and §10.4.2.2 give `1 - min(1, 0.3c + 0.59m + 0.11y + k)`, where the colors as
