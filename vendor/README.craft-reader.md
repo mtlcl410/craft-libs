@@ -78,6 +78,15 @@ object where two objects overlap. The erase pass resolves the group's resources 
 adapts its tests; a plate-mode test in `crates/pdf/tests/plates.rs` checks the case of craft-libs
 #870, a Multiply knockout group over a yellow page.
 
+Colour, function and shading fixes, ported from PdfCraft pull requests by mtlcl410 that were
+open when they were ported (craft-libs #2675). Only their `hayro-interpret` and `hayro` part is
+ported. Code comments keep each pull request's `PdfCraft patch` label and number, where it has
+one. The tests are in the files they name.
+
+| PdfCraft PR | Files | Change | Tests |
+|---|---|---|---|
+| [#7514](https://github.com/storytold/pdfcraft/pull/7514) | hayro-interpret `function/mod.rs`, `function/type4.rs` | Patch 115: a Type 4 (PostScript calculator) function's outputs are the top values of its operand stack, as many as `/Range` has pairs (ISO 32000-2 §7.10.5.3), so a program that leaves extra values below them keeps the right ones; one that leaves fewer fails, as an evaluation that cannot finish, and a tint transform then paints the alternate space's initial colour | `function::type4::tests::extra_values_below_the_outputs_are_ignored`, `a_program_leaving_exactly_the_outputs_is_unchanged`, `a_program_leaving_too_few_values_fails`; hayro `type4_output_tests::extra_values_below_the_outputs_are_ignored`, `a_program_leaving_exactly_the_outputs_is_unchanged`, `a_program_leaving_too_few_values_paints_the_initial_colour` |
+
 A craft-libs patch, labeled `Craft patch (CMYK masks)` in code comments,
 takes a luminosity soft mask whose group is DeviceCMYK from the group's inks: ISO 32000-2
 §11.6.5.2 and §10.4.2.2 give `1 - min(1, 0.3c + 0.59m + 0.11y + k)`, where the colors as
