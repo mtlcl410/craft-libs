@@ -381,7 +381,7 @@ fn rc4_128_can_leave_the_metadata_readable() {
 /// qpdf reads every level's version, crypt filter and metadata choice as written.
 #[test]
 fn qpdf_reads_the_levels_as_written() {
-    let qpdf = crate::oracle::or_skip!(crate::oracle::qpdf());
+    let qpdf = super::oracle::or_skip!(super::oracle::qpdf());
     let dir = private_temp_dir("pdfcraft-enc-levels");
     for (alg, encrypt_metadata, want) in [
         (Algorithm::Rc4_128, false, &["PDF Version: 1.5", "R = 4", "stream encryption method: RC4"][..]),
